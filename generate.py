@@ -18,8 +18,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from autoattack import AutoAttack
-from stadv_eot.attacks import StAdvAttack
 import torchvision.utils as tvu
 import utils
 from utils import str2bool, get_accuracy, get_image_classifier, data_loader
@@ -52,7 +50,7 @@ def generate(args, config):
     dataloader = data_loader(args, adv_batch_size)
     cnt = 0
     for i, (x, y, p) in tqdm(enumerate(dataloader)):
-        
+
         # check image path
         p = p[0].split('/')
         save_dir = os.path.join(args.log_dir, p[-3], p[-2])
