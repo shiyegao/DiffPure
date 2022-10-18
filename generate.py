@@ -20,13 +20,10 @@ import torch.nn.functional as F
 
 import torchvision.utils as tvu
 import utils
-from utils import str2bool, get_accuracy, get_image_classifier, data_loader
+from utils import str2bool,  data_loader
 
 from runners.diffpure_ddpm import Diffusion
-from runners.diffpure_guided import GuidedDiffusion
 from runners.diffpure_sde import RevGuidedDiffusion
-from runners.diffpure_ode import OdeGuidedDiffusion
-from runners.diffpure_ldsde import LDGuidedDiffusion
 
 
 
@@ -49,7 +46,7 @@ def generate(args, config):
     # load data
     dataloader = data_loader(args, adv_batch_size)
     cnt = 0
-    for i, (x, y, p) in tqdm(enumerate(dataloader)):
+    for i, (x, _, p) in tqdm(enumerate(dataloader)):
 
         # check image path
         p = p[0].split('/')
@@ -60,11 +57,10 @@ def generate(args, config):
             continue
 
         # generate image
-        x.to("cuda:0")
-        y.to("cuda:0")
-        x_re = diffusion.image_editing((x - 0.5) * 2)
-        tvu.save_image((x_re[0] + 1) * 0.5, save_path)
-        cnt += 1
+        with torch.no_grad():
+            x_re = diffusion.image_editing((x - 0.5) * 2)
+            tvu.save_image((x_re[0] + 1) * 0.5, save_path)
+            cnt += 1
     print(f"Generate {cnt}/{i+1}")
     
     logger.close()
