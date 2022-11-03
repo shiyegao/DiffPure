@@ -49,18 +49,26 @@ def generate(args, config):
     for i, (x, _, p) in tqdm(enumerate(dataloader)):
 
         # check image path
-        p = p[0].split('/')
-        save_dir = os.path.join(args.log_dir, p[-3], p[-2])
-        os.makedirs(save_dir, exist_ok=True)
-        save_path = os.path.join(save_dir, p[-1])
-        if os.path.exists(save_path):
+        is_skip = True
+        paths = []
+        for i in range(args.adv_batch_size):
+            p_i = p[i]
+            p_i = p_i.split('/')
+            save_dir = os.path.join(args.log_dir, p_i[-3], p_i[-2])
+            os.makedirs(save_dir, exist_ok=True)
+            save_path = os.path.join(save_dir, p_i[-1])
+            paths.append(save_path)
+            if not os.path.exists(save_path):
+                is_skip = False
+        if is_skip:
             continue
 
         # generate image
         with torch.no_grad():
             x_re = diffusion.image_editing((x - 0.5) * 2)
-            tvu.save_image((x_re[0] + 1) * 0.5, save_path)
-            cnt += 1
+            for i in range(args.adv_batch_size):
+                tvu.save_image((x_re[0] + 1) * 0.5, paths[i])
+                cnt += 1
     print(f"Generate {cnt}/{i+1}")
     
     logger.close()

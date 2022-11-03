@@ -255,10 +255,9 @@ def get_image_classifier(classifier_name):
 
 def data_loader(args, adv_batch_size):
 
-    val_dir = './dataset/imagenetc_lmdb/val'  # using imagenet lmdb data
     val_transform = data.get_transform(args.domain, 'imval', base_size=224)
     val_data = data.ImageDataset(
-        f'dataset/imagenetc_lmdb/val/{args.noise}/5', 
+        f'/shared/dqwang/scratch/jingao/imagenet-c-bar/{args.noise}/5', 
         transform=val_transform, 
         return_path=True
     )

@@ -68,10 +68,14 @@ class ImageDataset(VisionDataset):
             raise (RuntimeError(
                 "Found 0 files in subfolders of: " + self.root + "\nSupported extensions are: " + ",".join(extensions)))
 
+        order = 1
+        t0 = 0
+        t1 = 50000
         self.loader = loader
         self.classes = classes
         self.class_to_idx = class_to_idx
-        self.samples = samples
+        self.samples = samples[::order][t0:t1]
+        print(f'Starting from {t0} to {t1}, in the order of {order}')
         self.return_path = return_path
 
     def _find_classes(self, dir):

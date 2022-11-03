@@ -159,12 +159,12 @@ class RevGuidedDiffusion(torch.nn.Module):
         # load model
         if config.data.dataset == 'ImageNet':
             img_shape = (3, 256, 256)
-            model_dir = 'pretrained/guided_diffusion'
+            model_dir = '/shared/dqwang/scratch/jialingzhang/guided_diffusion_models'
             model_config = model_and_diffusion_defaults()
             model_config.update(vars(self.config.model))
             print(f'model_config: {model_config}')
             model, _ = create_model_and_diffusion(**model_config)
-            model.load_state_dict(torch.load(f'{model_dir}/256x256_diffusion_uncond.pt', map_location='cpu'))
+            model.load_state_dict(torch.load('/shared/dqwang/scratch/jialingzhang/guided_diffusion_models/256x256_diffusion_uncond.pt', map_location='cpu'))
 
             if model_config['use_fp16']:
                 model.convert_to_fp16()
